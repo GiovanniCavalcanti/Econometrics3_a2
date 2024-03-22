@@ -21,10 +21,10 @@ data_monthly_original_output <- data_monthly_original %>%
   filter(year>1966)
 
 # function to run output regresions
-reg_output <- function(output_var = 'pcipnsa', verbose = F){
+reg_output <- function(output_var = 'pcipnsa', indep_var = 'resid', verbose = F){
   # formula output
   lag_output_formula <- str_flatten(sapply(1:24, function (x) str_c('lag(', output_var, ', ', x, ') + ')))
-  lag_monetary_formula <- str_flatten(sapply(1:36, function (x) str_c('lag(resid, ', x, ') + ')))
+  lag_monetary_formula <- str_flatten(sapply(1:36, function (x) str_c('lag(', indep_var, ', ', x, ') + ')))
   formula_output <- as.formula(str_c(output_var, ' ~ ', lag_output_formula, lag_monetary_formula, 'factor(month)'))
   # run the model
   model_output <- lm(formula_output, data = data_monthly_original_output)
@@ -36,10 +36,10 @@ reg_output <- function(output_var = 'pcipnsa', verbose = F){
 }
 
 # function to calculate monetary shocks
-calculate_mon_shock <- function(model_coef, dep_var='pcipnsa') {
+calculate_mon_shock <- function(model_coef = model_actual$coefficients, output_var='pcipnsa', indep_var = "dff") {
   # select coefficients
-  model_coef_dep <- c(model_coef[str_subset(names(model_coef), str_c(dep_var, ','))], rep(0, 24))
-  model_coef_mon <- c(model_coef[str_subset(names(model_coef), 'resid,')], rep(0, 12))
+  model_coef_dep <- c(model_coef[str_subset(names(model_coef), str_c(output_var, ','))], rep(0, 24))
+  model_coef_mon <- c(model_coef[str_subset(names(model_coef), str_c(indep_var, ','))], rep(0, 12))
   
   #
   n <- length(model_coef_mon)
@@ -54,7 +54,7 @@ calculate_mon_shock <- function(model_coef, dep_var='pcipnsa') {
 }
 
 # function to get bootstrap values
-bootstrap_se <- function(model, dep_var='pcipnsa', look_path = F){
+bootstrap_se <- function(model, output_var='pcipnsa', indep_var = "resid", look_path = F){
   # select model coefficients 
   model_coef <- model$coefficients
   
@@ -65,14 +65,14 @@ bootstrap_se <- function(model, dep_var='pcipnsa', look_path = F){
   model_bootstrap <- matrix(NA, 500, 48)
   for (i in 1:500) {
     model_coef <- model_coef_bootstrap[i,]
-    model_bootstrap[i,] <- cumsum(calculate_mon_shock(model_coef, dep_var))
+    model_bootstrap[i, ] <- cumsum(calculate_mon_shock(model_coef = model_coef, output_var =  output_var, indep_var = indep_var))
   }
   
   if (look_path) {
     # plot boots
     plot(1:48, model_bootstrap[1, ], type = "l", ylim = range(model_bootstrap), 
          xlab = "Months After Shock", ylab = "Percent", 
-         main = str_c("Different Paths Under Bootstrap (", dep_var, ")"))
+         main = str_c("Different Paths Under Bootstrap (", output_var, ")"))
     for (i in 2:500) {
       lines(1:ncol(model_bootstrap), model_bootstrap[i, ], col = rainbow(nrow(model_bootstrap))[i])
     }
@@ -86,25 +86,25 @@ bootstrap_se <- function(model, dep_var='pcipnsa', look_path = F){
   return(std_errors_bootstrap)
 } 
 
-model_industrial <- reg_output('pcipnsa', T)
+model_industrial <- reg_output(verbose = T)
 # alternative measures
-model_actual <- reg_output('dff')
-model_intended <- reg_output('dtarg')
-model_actual_forecasts <- reg_output('residf')
+model_actual <- reg_output(output_var = 'pcipnsa', indep_var = 'dff')
+model_intended <- reg_output(indep_var = 'dtarg')
+model_actual_forecasts <- reg_output(indep_var = 'residf')
 
 # calculate monetary shocks
-shock_industrial <- cumsum(calculate_mon_shock(model_industrial$coefficients, 'pcipnsa'))
+shock_industrial <- cumsum(calculate_mon_shock(model_coef = model_industrial$coefficients, output_var =  'pcipnsa', indep_var = "resid"))
 #
-shock_actual <- cumsum(calculate_mon_shock(model_actual$coefficients, 'dff'))
-shock_intended <- cumsum(calculate_mon_shock(model_intended$coefficients, 'dtarg'))
-shock_actual_forecasts <- cumsum(calculate_mon_shock(model_actual_forecasts$coefficients, 'residf'))
+shock_actual <- cumsum(calculate_mon_shock(model_coef = model_actual$coefficients, output_var='pcipnsa', indep_var = "dff"))
+shock_intended <- cumsum(calculate_mon_shock(model_coef = model_intended$coefficients, output_var = 'pcipnsa', indep_var = "dtarg"))
+shock_actual_forecasts <- cumsum(calculate_mon_shock(model_coef = model_actual_forecasts$coefficients, 'pcipnsa', indep_var = "residf"))
 
 # calculating bootstrap errors
-bootstrap_se_industrial <- bootstrap_se(model_industrial, look_path = T)
+bootstrap_se_industrial <- bootstrap_se(model = model_industrial, output_var='pcipnsa', indep_var = "resid", look_path = F)
 #
-bootstrap_se_actual <- bootstrap_se(model_actual, 'dff')
-bootstrap_se_intended <- bootstrap_se(model_intended, 'dtarg')
-bootstrap_se_actual_forecasts <- bootstrap_se(model_actual_forecasts, 'residf')
+bootstrap_se_actual <- bootstrap_se(model = model_actual, output_var = 'pcipnsa', indep_var = 'dff', look_path = F)
+bootstrap_se_intended <- bootstrap_se(model = model_intended, output_var = 'pcipnsa', indep_var = 'dtarg', look_path = F)
+bootstrap_se_actual_forecasts <- bootstrap_se(model = model_actual_forecasts, output_var = 'pcipnsa', indep_var = 'residf', look_path = F)
 
 # ---
 ## Table 2 ----
@@ -142,7 +142,8 @@ plot_actual <- ggplot(mapping=aes(x=1:48)) +
   theme(
     panel.border = element_rect(color = "black", fill = NA, size = 2)) +
   labs(y = 'Percent', x = 'Months After Shock') +
-  scale_y_continuous(n.breaks = 10) + 
+  scale_y_continuous(n.breaks = 10) +  
+  ylim(-0.07, 0.02) +
   scale_x_continuous(n.breaks=16, limits = c(0, 48), expand = c(0, 0))
 
 print(plot_actual)
@@ -158,6 +159,7 @@ plot_intermediate <- ggplot(mapping=aes(x=1:48))  +
     panel.border = element_rect(color = "black", fill = NA, size = 2)) +
   labs(y = 'Percent', x = 'Months After Shock', linetype = "Series") +
   scale_y_continuous(n.breaks = 10) + 
+  ylim(-0.07, 0.02) +
   scale_x_continuous(n.breaks=16, limits = c(0, 48), expand = c(0, 0))
 
 print(plot_intermediate)
