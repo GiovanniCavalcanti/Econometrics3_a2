@@ -5,13 +5,13 @@ rm(list = ls())
 
 gc()
 
-
 # packages ----------------------------------------------------------------
 
 library(tidyverse)
 library(readxl)
+library(lubridate)
 
-
+# original data -----------------------------------------------------------
 
 data_meeting_original <- read_xls(path = "replication_kit/RomerandRomerDataAppendix.xls",
                           sheet = "DATA BY MEETING") %>%
@@ -89,3 +89,33 @@ rm(col_name, monthly_labels)
 
 write_rds(data_meeting_original, file = "datasets/data_meeting_original.rds")
 write_rds(data_monthly_original, file = "datasets/data_monthly_original.rds")
+
+# expanded data -----------------------------------------------------------
+
+data_monthly_expanded <- read_xlsx(path = "Ramey_HOM_monetary/Monetarydat.xlsx",
+                                  sheet = "Monthly") %>%
+  rename_with(tolower) %>%
+  dplyr::select(resid = rrshock, lnipnsa = lip, lnppinsa = lcpi, sumshck = cumrrshock)
+
+date_sequence <- seq.Date(from = as.Date("1959-01-01"), by = "month", length.out = nrow(data_monthly_expanded))
+
+# Assign this date sequence to a new column in your dataframe
+data_monthly_expanded$mtgdate <- date_sequence
+
+rm(date_sequence)
+
+labels <- c(
+  mtgdate = "Date",
+  resid = "Our new shock series, converted to monthly.",
+  lnipnsa = "Log of the non-seasonally-adjusted index of industrial production (used in the VARs).",
+  lnppinsa = "Log of the non-seasonally-adjusted producer price index (used in the VARs).",
+  sumshck = "RESIDF, cumulated to be in levels (used in some of the VARs)."
+)
+for (col_name in names(labels)) {
+  attr(data_monthly_expanded[[col_name]], "label") <- labels[col_name]
+}
+
+rm(col_name, labels)
+
+write_rds(data_monthly_expanded, file = "datasets/data_monthly_expanded.rds")
+
