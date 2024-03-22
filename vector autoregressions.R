@@ -10,7 +10,15 @@ data_monthly_expanded <- readRDS(file = "datasets/data_monthly_expanded.rds")
 
 
 # original ----------------------------------------------------------------
+# Convert to xts for VAR analysis
+VAR_data <- xts(dplyr::select(data_monthly_original, lnipnsa, lnppinsa, sumshck), order.by=data_monthly_original$date)
 
+VAR_est <- VAR(VAR_data, type = "const", lag.max = 36, ic = "AIC")
+
+teste <- irf(VAR_est, impulse = "sumshck", n.ahead = 48, ortho = FALSE,
+             cumulative = TRUE, boot = TRUE, ci = 0.9, runs = 100)
+#png("figs/irf_asy_quarterly.png", width = 700, height = 500)
+plot(teste)
 
 # expanded ----------------------------------------------------------------
 
@@ -23,11 +31,7 @@ filtered_data <- data_monthly_expanded %>%
 # Convert to xts for VAR analysis
 VAR_data <- xts(dplyr::select(filtered_data, lnipnsa, lnppinsa, sumshck), order.by=filtered_data$mtgdate)
 
-VAR_est <- VAR(VAR_data, p = 36, type = "const")
-
-irf_results <- irf(VAR_est, n.ahead = 48, ci = 0.67, boot = TRUE, ortho = FALSE, cumulative = TRUE, runs = 500)
-
-plot(irf_results, impulse = "sumshck", response)
+VAR_est <- VAR(VAR_data, type = "const", lag.max = 36, ic = "AIC")
 
 teste <- irf(VAR_est, impulse = "sumshck", response = "sumshck", n.ahead = 48, ortho = FALSE,
                cumulative = TRUE, boot = TRUE, ci = 0.9, runs = 100)
@@ -43,13 +47,4 @@ teste <- irf(VAR_est, impulse = "sumshck", response = "lnppinsa", n.ahead = 48, 
              cumulative = TRUE, boot = TRUE, ci = 0.9, runs = 100)
 #png("figs/irf_asy_quarterly.png", width = 700, height = 500)
 plot(teste)
-
-
-
-
-
-
-
-
-
 
