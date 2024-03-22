@@ -8,6 +8,7 @@ library(lubridate)
 library(patchwork)
 
 data_meeting_original <- readRDS(file = "datasets/data_meeting_original.rds")
+data_monthly_original <- readRDS(file = "datasets/data_monthly_original.rds")
 
 model_1 <- lm(formula = dtarg ~ oldtarg + 
                 (graym + gray0 + gray1 + gray2) + 
@@ -45,10 +46,11 @@ all.equal(data_meeting_original$residuals, data_meeting_original$resid)
 
 rm(na_action)
 
-table_2_data <- select(data_meeting_original, mtgdate, residuals) %>%
+table_2_data <- select(data_meeting_original, mtgdate, residuals, dffmtg) %>%
   mutate(month_year = format(.$mtgdate, "%m-%Y")) %>%
   group_by(month_year) %>%
-  summarise(residuals = sum(residuals)) %>%
+  summarise(residuals = sum(residuals),
+            dffmtg = sum(dffmtg)) %>%
   ungroup() %>%
   mutate(date = as.Date(paste0("01-", month_year), format="%d-%m-%Y")) %>%
   arrange(date) %>%
@@ -63,13 +65,19 @@ table_2_data_wide <- table_2_data %>%
   mutate(year = year(mtgdate),
          month = month(mtgdate, label = TRUE)) %>%
   select(-month_year, -mtgdate)  %>%
-  pivot_wider(names_from = month, values_from = residuals)
+  pivot_wider(names_from = month, values_from = residuals) %>%
+  mutate(across(everything(), ~replace_na(., 0)))
+
+table_2_data <- mutate(table_2_data, qrtdate = zoo::as.yearqtr(mtgdate)) %>%
+  group_by(qrtdate) %>%
+  summarise(residuals = sum(residuals),
+            dffmtg = sum(dffmtg))
+
   
 # Assuming your first plot is assigned to p1 and your second plot to p2
-p1 <- ggplot(table_2_data, aes(x = mtgdate, y = residuals)) +
+p1 <- ggplot(table_2_data, aes(x = qrtdate, y = residuals)) +
   geom_line() +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  scale_x_date(limits = range(table_2_data$mtgdate, na.rm = TRUE)) +
   ylim(-5, 3) +
   theme_minimal() +
   labs(x = "", y = "Percentage Points", 
@@ -78,10 +86,14 @@ p1 <- ggplot(table_2_data, aes(x = mtgdate, y = residuals)) +
         plot.title = element_text(hjust = 0.5),
         panel.border = element_rect(colour = "black", fill=NA, size=1))
 
-p2 <- ggplot(data_meeting_original, aes(x = mtgdate, y = dffmtg)) +
+data_monthly_original <- select(data_monthly_original, date, residf) %>%
+  mutate(date = zoo::as.yearqtr(date)) %>%
+  group_by(date) %>%
+  summarise(residf = sum(residf))
+
+p2 <- ggplot(data_monthly_original, aes(x = date, y = residf)) +
   geom_line() +
   geom_hline(yintercept = 0, linetype = "dashed") +
-  scale_x_date(limits = range(data_meeting_original$mtgdate, na.rm = TRUE)) +
   ylim(-9, 9) +
   theme_minimal() +
   labs(x = "", y = "Percentage Points", 
