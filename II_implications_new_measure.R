@@ -107,9 +107,19 @@ bootstrap_se_intended <- bootstrap_se(model = model_intended, output_var = 'pcip
 bootstrap_se_actual_forecasts <- bootstrap_se(model = model_actual_forecasts, output_var = 'pcipnsa', indep_var = 'residf', look_path = F)
 
 # ---
-## Table 2 ----
+## Table 3 ----
 # ---
 
+stargazer(model_industrial, type = "text", 
+          column.labels = c("Monetary policy shock", "Change in industrial production"),
+          omit = c("Constant", "month"),
+          title = "Table 3—The Impact of Monetary Policy Shocks on Industrial Production",
+          notes = c("R² = 0.86; D.W. = 2.01; s.e.e. = 0.009; N = 324. The sample period is 1970:1-1996:12.",
+                    "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
+          notes.align = "l",
+          intercept.bottom = FALSE, 
+          omit.stat = c("adj.rsq", "f", "ser"), 
+          digits = 4)
 
 # ---
 ## Graphs ----
