@@ -22,7 +22,7 @@ model_1 <- lm(formula = dtarg ~ oldtarg +
 
 # table 1 -----------------------------------------------------------------
 
-stargazer(model_1, 
+table_1 <- stargazer(model_1, 
           type = "text", # Use "html" or "latex" for different output formats
           title = "Determinants of the Change in the Intended Federal Funds Rate",
           column.labels = c("Coefficient", "Standard Error"),
@@ -60,7 +60,6 @@ table_2_data <- select(data_meeting_original, mtgdate, residuals, dffmtg) %>%
 # Convert `month_year` to date to make sure it's ordered properly
 table_2_data$mtgdate <- as.Date(paste0("01-", table_2_data$month_year), format="%d-%m-%Y")
 
-# Separate the `month_year` column into `month` and `year`
 table_2_data_wide <- table_2_data %>%
   mutate(year = year(mtgdate),
          month = month(mtgdate, label = TRUE)) %>%
@@ -73,8 +72,6 @@ table_2_data <- mutate(table_2_data, qrtdate = zoo::as.yearqtr(mtgdate)) %>%
   summarise(residuals = sum(residuals),
             dffmtg = sum(dffmtg))
 
-  
-# Assuming your first plot is assigned to p1 and your second plot to p2
 p1 <- ggplot(table_2_data, aes(x = qrtdate, y = residuals)) +
   geom_line() +
   geom_hline(yintercept = 0, linetype = "dashed") +
@@ -86,12 +83,12 @@ p1 <- ggplot(table_2_data, aes(x = qrtdate, y = residuals)) +
         plot.title = element_text(hjust = 0.5),
         panel.border = element_rect(colour = "black", fill=NA, size=1))
 
-data_monthly_original <- select(data_monthly_original, date, residf) %>%
+data_monthly_original <- select(data_monthly_original, date, dff) %>%
   mutate(date = zoo::as.yearqtr(date)) %>%
   group_by(date) %>%
-  summarise(residf = sum(residf))
+  summarise(dff = sum(dff))
 
-p2 <- ggplot(data_monthly_original, aes(x = date, y = residf)) +
+p2 <- ggplot(data_monthly_original, aes(x = date, y = dff)) +
   geom_line() +
   geom_hline(yintercept = 0, linetype = "dashed") +
   ylim(-9, 9) +
@@ -103,11 +100,14 @@ p2 <- ggplot(data_monthly_original, aes(x = date, y = residf)) +
         panel.border = element_rect(colour = "black", fill=NA, size=1))
 
 # Use the patchwork package to combine the plots
-combined_plot <- p1 / p2
+figure_1 <- p1 / p2
 
 # Display the combined plot
-print(combined_plot)
+print(table_1)
+print(table_2_data_wide)
+print(figure_1)
 
+rm(data_meeting_original, data_monthly_original, model_1, p1, p2, table_2_data)
 
 
 
