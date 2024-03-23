@@ -126,12 +126,12 @@ plot_actual <- ggplot(mapping = aes(x = 1:48)) +
   scale_x_continuous(breaks = seq(0, 48, by = 3), limits = c(0, 48), expand = c(0, 0))
 
 # Combine the two plots into one panel
-combined_plots <- plot_industrial / plot_actual + 
+figure_7 <- plot_industrial / plot_actual + 
   plot_layout(guides = 'collect') +
   plot_annotation(title = 'Figure 7. The Effect of Monetary Policy on Output With and Without Commodity Prices')
 
 # Print the combined plot
-print(combined_plots)
+print(figure_7)
 
 rm(data_monthly_original_output, model_actual, model_actual_com, model_industrial, model_industrial_com,
    plot_actual, plot_industrial, shock_actual, shock_actual_com, shock_industrial, shock_industrial_com,
@@ -245,9 +245,13 @@ plot_actual <- ggplot(mapping = aes(x = 1:48)) +
   scale_x_continuous(breaks = seq(0, 48, by = 3), limits = c(0, 48), expand = c(0, 0))
 
 # Combine the two plots into one panel
-combined_plots <- plot_price / plot_actual + 
+figure_8 <- plot_price / plot_actual + 
   plot_layout(guides = 'collect') +
   plot_annotation(title = 'Figure 8. The Effect of Monetary Policy on The Price Level With and Without Commodity Prices')
 
 # Print the combined plot
-print(combined_plots)
+print(figure_8)
+
+rm(model_actual, model_actual_com, model_price, model_price_com, plot_actual, plot_price, 
+   shock_actual, shock_actual_com, shock_price, shock_price_com, calculate_mon_shock, reg_output,
+   reg_output_com, data_monthly_original_price)
