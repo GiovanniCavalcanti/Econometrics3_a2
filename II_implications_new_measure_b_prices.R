@@ -86,19 +86,30 @@ bootstrap_se <- function(model, output_var='pcppinsa', indep_var = "resid", look
 } 
 
 model_price <- reg_output(verbose = T)
-# alternative measures
 model_cpi <- reg_output(output_var = 'pccpinsa', indep_var = 'resid', verbose = F)
 model_pce <- reg_output(output_var = 'pcpcegsa', indep_var = 'resid', verbose = F)
+# alternative measures
+model_actual <- reg_output(output_var = 'pcppinsa', indep_var = 'dff')
+model_intended <- reg_output(indep_var = 'dtarg')
+model_actual_forecasts <- reg_output(indep_var = 'residf')
 
 # calculate monetary shocks
 shock_price <- cumsum(calculate_mon_shock(model_coef = model_price$coefficients, output_var =  'pcppinsa', indep_var = "resid"))
-#
 shock_cpi <- cumsum(calculate_mon_shock(model_coef = model_cpi$coefficients, output_var =  'pccpinsa', indep_var = "resid"))
 shock_pce <- cumsum(calculate_mon_shock(model_coef = model_pce$coefficients, output_var =  'pcpcegsa', indep_var = "resid"))
+#
+shock_actual <- cumsum(calculate_mon_shock(model_coef = model_actual$coefficients, output_var='pcppinsa', indep_var = "dff"))
+shock_intended <- cumsum(calculate_mon_shock(model_coef = model_intended$coefficients, output_var = 'pcppinsa', indep_var = "dtarg"))
+shock_actual_forecasts <- cumsum(calculate_mon_shock(model_coef = model_actual_forecasts$coefficients, 'pcppinsa', indep_var = "residf"))
 
 
 # calculating bootstrap errors
 bootstrap_se_price <- bootstrap_se(model = model_price, output_var='pcppinsa', indep_var = "resid", look_path = F)
+#
+bootstrap_se_actual <- bootstrap_se(model = model_actual, output_var = 'pcppinsa', indep_var = 'dff', look_path = F)
+bootstrap_se_intended <- bootstrap_se(model = model_intended, output_var = 'pcppinsa', indep_var = 'dtarg', look_path = F)
+bootstrap_se_actual_forecasts <- bootstrap_se(model = model_actual_forecasts, output_var = 'pcppinsa', indep_var = 'residf', look_path = F)
+
 #
 # ---
 ## Table 4 ----
@@ -154,12 +165,46 @@ ggplot(mapping=aes(x=1:48)) +
 
 # Figure 6
 
+# Actual Funds rate 
+plot_actual <- ggplot(mapping=aes(x=1:48)) +
+  geom_line(mapping=aes(y=shock_actual), color="black") + 
+  geom_line(mapping=aes(y=shock_actual-bootstrap_se_actual), linetype="dotted") +
+  geom_line(mapping=aes(y=shock_actual+bootstrap_se_actual), linetype="dotted") +
+  geom_hline(yintercept = 0, linetype="dotted") +
+  theme_minimal() +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 2),
+    axis.text.x = element_text(angle = 90, vjust = 0.5),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(y = 'Percent', x = 'Months After Shock') +
+  ggtitle("a. Using the Change in the Actual Federal Funds Rate") +
+  scale_y_continuous(limits = c(-0.07, 0.02), breaks = seq(-0.07, 0.02, by = 0.01)) +  
+  scale_x_continuous(breaks=seq(0, 48, by = 3), limits = c(0, 48), expand = c(0, 0))
 
 
+# Intermediate Broader measures
+plot_intermediate <- ggplot(mapping=aes(x=1:48))  +
+  geom_line(mapping = aes(y = shock_actual_forecasts), linetype = "dotdash") + 
+  geom_line(mapping = aes(y = shock_intended), linetype = "solid") +
+  geom_hline(yintercept = 0, linetype="dotted") +
+  annotate("text", x = 3, y = 0.01, label = "Change in the Intended Funds Rate", hjust = 0, size = 3) +
+  annotate("text", x = 6, y = -0.005, label = "Change in the Actual Funds Rate Controlling for Forecasts", hjust = 0, size = 3) +
+  theme_minimal() +
+  theme(
+    panel.border = element_rect(color = "black", fill = NA, size = 2),
+    legend.position = "none",
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(y = 'Percent', x = 'Months After Shock') +
+  scale_y_continuous(limits = c(-0.07, 0.02), breaks = seq(-0.07, 0.02, 0.01)) + 
+  scale_x_continuous(breaks=seq(0, 48, 3), limits = c(0, 48), expand = c(0, 0)) +
+  ggtitle("b. Using the Intermediate Broader Measures")
 
+plot_combined <- plot_actual / plot_intermediate + 
+  plot_layout(guides = 'collect') +
+  theme(plot.title = element_text(size = 14))
 
-
-
-
-
+# Print the combined plot
+print(plot_combined)
 
