@@ -115,7 +115,7 @@ bootstrap_se_actual_forecasts <- bootstrap_se(model = model_actual_forecasts, ou
 ## Table 4 ----
 # ---
 
-stargazer(model_price, type = "text", 
+table_4 <- stargazer(model_price, type = "text", 
           column.labels = c("Monetary policy shock", "Change in producer prices"),
           omit = c("Constant", "month"),
           title = "TABLE 4 - THE IMPACT OF MONETARY POLICY SHOCKS ON PRICES",
@@ -131,7 +131,7 @@ stargazer(model_price, type = "text",
 # ---
 
 # Figure 4
-ggplot(mapping=aes(x=1:48)) +
+figure_4 <- ggplot(mapping=aes(x=1:48)) +
   geom_line(mapping=aes(y=shock_price), color="black") + 
   geom_ribbon(aes(ymin=shock_price-bootstrap_se_price, ymax=shock_price+bootstrap_se_price), alpha=0.2) +
   geom_hline(yintercept = 0, linetype="dotted") +
@@ -145,7 +145,7 @@ ggplot(mapping=aes(x=1:48)) +
   scale_x_continuous(breaks=seq(0, 48, by = 3), limits = c(0, 48), expand = c(0, 0))
 
 # Figure 5
-ggplot(mapping=aes(x=1:48)) +
+figure_5 <- ggplot(mapping=aes(x=1:48)) +
   geom_line(mapping=aes(y=shock_cpi, linetype = "CPI Excluding Shelter"), color="black") + 
   geom_line(mapping=aes(y=shock_pce, linetype = "PCE Price Index"), color="black", linetype="twodash") +
   geom_hline(yintercept = 0, linetype="dotted") +
@@ -201,10 +201,26 @@ plot_intermediate <- ggplot(mapping=aes(x=1:48))  +
   scale_x_continuous(breaks=seq(0, 48, 3), limits = c(0, 48), expand = c(0, 0)) +
   ggtitle("b. Using the Intermediate Broader Measures")
 
-plot_combined <- plot_actual / plot_intermediate + 
+figure_6 <- plot_actual / plot_intermediate + 
   plot_layout(guides = 'collect') +
-  theme(plot.title = element_text(size = 14))
+  plot_annotation(title = 'FIGURE 6. THE EFFECT OF BROADER MEASURES OF MONETARY POLICY ON THE PRICE LEVEL')
 
 # Print the combined plot
-print(plot_combined)
+print(table_4)
+print(figure_4)
+print(figure_5)
+print(figure_6)
 
+# List all objects in the environment
+all_objects <- ls()
+
+# Specify the objects you want to keep
+objects_to_keep <- c("table_4", "figure_4", "figure_5", "figure_6")
+
+# Identify objects to remove (those not in the objects_to_keep list)
+objects_to_remove <- setdiff(all_objects, objects_to_keep)
+
+# Remove the objects_to_remove
+if (length(objects_to_remove) > 0) {
+  rm(list = objects_to_remove)
+}
