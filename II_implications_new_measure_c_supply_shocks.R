@@ -232,8 +232,8 @@ plot_actual <- ggplot(mapping = aes(x = 1:48)) +
   geom_line(mapping = aes(y = shock_actual_com), linetype = "dotdash", color = "black") +
   geom_line(mapping = aes(y = shock_actual), linetype = "solid", color = "black") +
   geom_hline(yintercept = 0, linetype = "dotted") +
-  annotate("text", x = 3, y = 0.01, label = "With Commodity Prices", hjust = 0, size = 3.5) +
-  annotate("text", x = 9, y = -0.005, label = "Without Commodity Prices", hjust = 0, size = 3.5) +
+  annotate("text", x = 3, y = 0.01, label = "Without Commodity Prices", hjust = 0, size = 3.5) +
+  annotate("text", x = 9, y = -0.005, label = "With Commodity Prices", hjust = 0, size = 3.5) +
   theme_minimal() +
   theme(
     panel.border = element_rect(color = "black", fill = NA, size = 2),

@@ -136,7 +136,7 @@ figure_2e <- ggplot(mapping=aes(x=1:48)) +
     plot.title = element_text(hjust = 0.5)
   ) +
   labs(y = 'Percent', x = 'Months After Shock', title="Figure 2. The Effect of Monetary Policy on Output") +
-  scale_y_continuous(limits = c(-0.07, 0.02), breaks = seq(-0.07, 0.02, by = 0.01)) + 
+  scale_y_continuous(limits = c(-1, 0.02), breaks = seq(-1, 0.02, by = 0.1)) + 
   scale_x_continuous(breaks=seq(0, 48, by = 3), limits = c(0, 48), expand = c(0, 0))
 
 
