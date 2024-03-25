@@ -90,32 +90,51 @@ rm(col_name, monthly_labels)
 write_rds(data_meeting_original, file = "datasets/data_meeting_original.rds")
 write_rds(data_monthly_original, file = "datasets/data_monthly_original.rds")
 
-# expanded data -----------------------------------------------------------
+# extended data -----------------------------------------------------------
 
-data_monthly_expanded <- read_xlsx(path = "Ramey_HOM_monetary/Monetarydat.xlsx",
-                                  sheet = "Monthly") %>%
+data_monthly_extended <- read_xlsx(path = "Ramey_HOM_monetary/Monetarydat.xlsx",
+                                   sheet = "Monthly") %>%
   rename_with(tolower) %>%
-  dplyr::select(resid = rrshock, lnipnsa = lip, lnppinsa = lcpi, sumshck = cumrrshock)
+  mutate(dff = c(NA, diff(ffr)),
+         pcipnsa = c(NA, diff(lip)),
+         pcwcp = c(NA, diff(lpcom)),
+         pccpinsa = c(NA, diff(lcpi))
+  ) %>%
+  dplyr::select(resid = rrshock,
+                dff,
+                pcipnsa,
+                pcwcp =,
+                pccpinsa,
+                lnipnsa = lip, 
+                lnppinsa = lcpi, 
+                sumshck = cumrrshock)
 
-date_sequence <- seq.Date(from = as.Date("1959-01-01"), by = "month", length.out = nrow(data_monthly_expanded))
+date_sequence <- seq.Date(from = as.Date("1959-01-01"), by = "month", length.out = nrow(data_monthly_extended))
 
 # Assign this date sequence to a new column in your dataframe
-data_monthly_expanded$mtgdate <- date_sequence
+data_monthly_extended$date <- date_sequence
 
 rm(date_sequence)
 
-labels <- c(
-  mtgdate = "Date",
+monthly_labels <- c(
   resid = "Our new shock series, converted to monthly.",
+  dff = "Change in the actual federal funds rate.",
+  pcipnsa = "Change in the log of the non-seasonally-adjusted index of industrial production.",
+  pcwcp = "Change in the log of the index of world commodity prices",
+  pccpinsa = "Change in the log of the non-seasonally-adjusted consumer price index.",
   lnipnsa = "Log of the non-seasonally-adjusted index of industrial production (used in the VARs).",
   lnppinsa = "Log of the non-seasonally-adjusted producer price index (used in the VARs).",
-  sumshck = "RESIDF, cumulated to be in levels (used in some of the VARs)."
+  sumshck = "Our new measure of monetary shocks, cumulated to be in levels (used in some of the VARs).",
+  date = ""
 )
-for (col_name in names(labels)) {
-  attr(data_monthly_expanded[[col_name]], "label") <- labels[col_name]
+for (col_name in names(monthly_labels)) {
+  attr(data_monthly_extended[[col_name]], "label") <- monthly_labels[col_name]
 }
 
 rm(col_name, labels)
 
-write_rds(data_monthly_expanded, file = "datasets/data_monthly_expanded.rds")
+data_monthly_extended <- filter(data_monthly_extended, date > "1965-12-01", date < "2008-01-01") %>%
+  mutate(sumshck = if_else(is.na(sumshck), 0, sumshck))
+
+write_rds(data_monthly_extended, file = "datasets/data_monthly_extended.rds")
 
