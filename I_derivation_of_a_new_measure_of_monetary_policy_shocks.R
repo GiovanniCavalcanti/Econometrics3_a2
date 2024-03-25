@@ -23,13 +23,14 @@ model_1 <- lm(formula = dtarg ~ oldtarg +
 # table 1 -----------------------------------------------------------------
 
 table_1 <- stargazer(model_1, 
-          type = "text", # Use "html" or "latex" for different output formats
+          type = "latex", # Use "html" or "latex" for different output formats
           title = "Determinants of the Change in the Intended Federal Funds Rate",
           column.labels = c("Coefficient", "Standard Error"),
           add.lines = list(c("Notes:", "R² = 0.28; D.W. = 1.84; s.e.e. = 0.39; N = 263."),
                            c("The sample is FOMC meetings over the period 1969:3–1996:12.")),
           omit.stat = c("f", "ser", "adj.rsq"),
-          digits = 3)
+          digits = 3,
+          out = 'output/table1.tex')
 
 
 # table 2 -----------------------------------------------------------------
@@ -63,7 +64,7 @@ table_2_data$mtgdate <- as.Date(paste0("01-", table_2_data$month_year), format="
 table_2_data_wide <- table_2_data %>%
   mutate(year = year(mtgdate),
          month = month(mtgdate, label = TRUE)) %>%
-  select(-month_year, -mtgdate)  %>%
+  select(-month_year, -mtgdate, -dffmtg)  %>%
   pivot_wider(names_from = month, values_from = residuals) %>%
   mutate(across(everything(), ~replace_na(., 0)))
 
@@ -71,6 +72,9 @@ table_2_data <- mutate(table_2_data, qrtdate = zoo::as.yearqtr(mtgdate)) %>%
   group_by(qrtdate) %>%
   summarise(residuals = sum(residuals),
             dffmtg = sum(dffmtg))
+
+# to use in the plot breaks
+years <- year(data_monthly_original$date) %>% unique()
 
 p1 <- ggplot(table_2_data, aes(x = qrtdate, y = residuals)) +
   geom_line() +
@@ -81,7 +85,8 @@ p1 <- ggplot(table_2_data, aes(x = qrtdate, y = residuals)) +
        title = "a. New Measure of Monetary Policy Shocks") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         plot.title = element_text(hjust = 0.5),
-        panel.border = element_rect(colour = "black", fill=NA, size=1))
+        panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  scale_x_continuous(breaks = seq(from=min(years), to=max(years), by=2))
 
 data_monthly_original <- select(data_monthly_original, date, dff) %>%
   mutate(date = zoo::as.yearqtr(date)) %>%
@@ -97,15 +102,20 @@ p2 <- ggplot(data_monthly_original, aes(x = date, y = dff)) +
        title = "b. Change in the Actual Federal Funds Rate") +
   theme(axis.text.x = element_text(angle = 90, hjust = 1),
         plot.title = element_text(hjust = 0.5),
-        panel.border = element_rect(colour = "black", fill=NA, size=1))
+        panel.border = element_rect(colour = "black", fill=NA, size=1)) +
+  scale_x_continuous(breaks = seq(from=min(years), to=max(years), by=2))
 
 # Use the patchwork package to combine the plots
 figure_1 <- p1 / p2
 
 # Display the combined plot
-print(table_1)
-print(table_2_data_wide)
+# to run those tables, change type above where it's created to 'text' and remove the _file_ option (in order for stargazer not to save it)
+# print(table_1)
+stargazer(table_2_data_wide, out = 'output/table2.tex', summary = F)
 print(figure_1)
+
+# saving results
+ggsave(filename = 'output/figure1.png', figure_1, scale = 2)
 
 rm(data_meeting_original, data_monthly_original, model_1, p1, p2, table_2_data)
 
