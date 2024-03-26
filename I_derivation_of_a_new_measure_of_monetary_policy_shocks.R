@@ -1,5 +1,5 @@
 rm(list = ls())
-
+cat('\014')
 gc()
 
 library(tidyverse)
@@ -18,20 +18,20 @@ model_1 <- lm(formula = dtarg ~ oldtarg +
                 grau0,
               data = data_meeting_original
               )
-
+ 
 
 # table 1 -----------------------------------------------------------------
 
 table_1 <- stargazer(model_1, 
-          type = "latex", # Use "html" or "latex" for different output formats
+          type = "latex",
           title = "Determinants of the Change in the Intended Federal Funds Rate",
           column.labels = c("Coefficient", "Standard Error"),
-          add.lines = list(c("Notes:", "R² = 0.28; D.W. = 1.84; s.e.e. = 0.39; N = 263."),
-                           c("The sample is FOMC meetings over the period 1969:3–1996:12.")),
           omit.stat = c("f", "ser", "adj.rsq"),
           digits = 3,
           out = 'output/table1.tex')
 
+# list(c("Notes:", "R² = 0.28; D.W. = 1.84; s.e.e. = 0.39; N = 263."),
+#      c("The sample is FOMC meetings over the period 1969:3–1996:12."))
 
 # table 2 -----------------------------------------------------------------
 
@@ -111,7 +111,7 @@ figure_1 <- p1 / p2
 # Display the combined plot
 # to run those tables, change type above where it's created to 'text' and remove the _file_ option (in order for stargazer not to save it)
 # print(table_1)
-stargazer(table_2_data_wide, out = 'output/table2.tex', summary = F)
+stargazer(round(table_2_data_wide, 3), out = 'output/table2.tex', summary = F)
 print(figure_1)
 
 # saving results

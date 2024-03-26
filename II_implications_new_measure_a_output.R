@@ -110,16 +110,32 @@ bootstrap_se_actual_forecasts <- bootstrap_se(model = model_actual_forecasts, ou
 ## Table 3 ----
 # ---
 
-table_3 <- stargazer(model_industrial, type = "text", 
+table_3 <- stargazer(model_industrial, type = "text",
           column.labels = c("Monetary policy shock", "Change in industrial production"),
           omit = c("Constant", "month"),
-          title = "Table 3—The Impact of Monetary Policy Shocks on Industrial Production",
-          notes = c("R² = 0.86; D.W. = 2.01; s.e.e. = 0.009; N = 324. The sample period is 1970:1-1996:12.",
-                    "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
+          title = "The Impact of Monetary Policy Shocks on Industrial Production",
+          # notes = c("R² = 0.86; D.W. = 2.01; s.e.e. = 0.009; N = 324. The sample period is 1970:1-1996:12.",
+          #           "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
           notes.align = "l",
           intercept.bottom = FALSE, 
           omit.stat = c("adj.rsq", "f", "ser"), 
           digits = 4)
+
+# organizing to make like the paper table
+table3_aspaper <- matrix(NA, 36, 6)
+output_coef <- model_industrial$coefficients
+output_se <- sqrt(diag(vcov(model_industrial)))
+# lags columns
+table3_aspaper[,1] <- 1:36
+table3_aspaper[1:24,4] <- 1:24
+# coefficient columns
+table3_aspaper[,2] <- output_coef[str_subset(names(output_coef), 'resid')]
+table3_aspaper[1:24,5] <- output_coef[str_subset(names(output_coef), 'pcipnsa')]
+# se errors column
+table3_aspaper[,3] <- output_se[str_subset(names(output_se), 'resid')]
+table3_aspaper[1:24,6] <- output_se[str_subset(names(output_se), 'pcipnsa')]
+
+stargazer(round(table3_aspaper, 4), out='output/table3.tex', summary = F, header=F, digits=4)
 
 # ---
 ## Graphs ----
@@ -184,8 +200,8 @@ figure_3 <- plot_actual / plot_intermediate +
 
 # Print the combined plot
 print(table_3)
-print(figure_2)
-print(figure_3)
+ggsave(plot=figure_2, filename = 'output/figure2.png', scale=2)
+ggsave(plot=figure_3, filename = 'output/figure3.png', scale=2)
 
 # List all objects in the environment
 all_objects <- ls()

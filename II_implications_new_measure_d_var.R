@@ -7,7 +7,7 @@ library(vars)
 library(patchwork)
 
 data_monthly_original <- readRDS(file = "datasets/data_monthly_original.rds")
-data_monthly_expanded <- readRDS(file = "datasets/data_monthly_expanded.rds")
+data_monthly_expanded <- readRDS(file = "datasets/data_monthly_extended.rds")
 
 
 # original ----------------------------------------------------------------
@@ -127,3 +127,4 @@ combined_plot <- plot_sumshck / plot_lnipnsa / plot_lnppinsa +
 
 # Print the combined plot
 print(combined_plot)
+ggsave(plot=combined_plot, filename='output/fugure9.png', scale=2)

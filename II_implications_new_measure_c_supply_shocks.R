@@ -132,6 +132,7 @@ figure_7 <- plot_industrial / plot_actual +
 
 # Print the combined plot
 print(figure_7)
+ggsave(plot=figure_7, filename = 'output/figure7.png', scale=2)
 
 rm(data_monthly_original_output, model_actual, model_actual_com, model_industrial, model_industrial_com,
    plot_actual, plot_industrial, shock_actual, shock_actual_com, shock_industrial, shock_industrial_com,
@@ -251,7 +252,9 @@ figure_8 <- plot_price / plot_actual +
 
 # Print the combined plot
 print(figure_8)
+ggsave(plot=figure_8, filename = 'output/figure8.png', scale=2)
 
 rm(model_actual, model_actual_com, model_price, model_price_com, plot_actual, plot_price, 
    shock_actual, shock_actual_com, shock_price, shock_price_com, calculate_mon_shock, reg_output,
    reg_output_com, data_monthly_original_price)
+
