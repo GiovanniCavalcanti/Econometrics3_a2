@@ -126,6 +126,24 @@ table_4 <- stargazer(model_price, type = "text",
           omit.stat = c("adj.rsq", "f", "ser"), 
           digits = 4)
 
+# to mimic the structure of the paper
+table4_aspaper <- matrix(NA, 48, 6)
+price_coef <- model_price$coefficients
+price_se <- sqrt(diag(vcov(model_price)))
+# lags columns
+table4_aspaper[,1] <- 1:48
+table4_aspaper[1:24,4] <- 1:24
+# coefficient columns
+table4_aspaper[,2] <- price_coef[str_subset(names(price_coef), 'resid')]
+table4_aspaper[1:24,5] <- price_coef[str_subset(names(price_coef), 'pcppinsa')]
+# se errors column
+table4_aspaper[,3] <- price_se[str_subset(names(price_se), 'resid')]
+table4_aspaper[1:24,6] <- price_se[str_subset(names(price_se), 'pcppinsa')]
+
+stargazer(round(table4_aspaper, 4), out='output/table4.tex', summary = F, header=F, digits=4)
+
+
+
 # ---
 ## Graphs ----
 # ---

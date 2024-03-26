@@ -127,4 +127,4 @@ combined_plot <- plot_sumshck / plot_lnipnsa / plot_lnppinsa +
 
 # Print the combined plot
 print(combined_plot)
-ggsave(plot=combined_plot, filename='output/fugure9.png', scale=2)
+ggsave(plot=combined_plot, filename='output/figure9.png', scale=2)

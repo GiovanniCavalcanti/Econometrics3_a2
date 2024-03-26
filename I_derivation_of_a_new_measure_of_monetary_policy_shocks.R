@@ -22,13 +22,35 @@ model_1 <- lm(formula = dtarg ~ oldtarg +
 
 # table 1 -----------------------------------------------------------------
 
+coef_dic <- c('Old Target', 
+              'Forecasted Output Growth (-1)',
+              'Forecasted Output Growth (0)',
+              'Forecasted Output Growth (+1)',
+              'Forecasted Output Growth (+2)',
+              'Change in Forecast Output (-1)',
+              'Change in Forecast Output (0)',
+              'Change in Forecast Output (+1)',
+              'Change in Forecast Output (+2)',
+              'Forecasted Inflation (-1)',
+              'Forecasted Inflation (0)',
+              'Forecasted Inflation (+1)',
+              'Forecasted Inflation (+2)',
+              'Change in Forecasted Inflation (-1)',
+              'Change in Forecasted Inflation (0)',
+              'Change in Forecasted Inflation (+1)',
+              'Change in Forecasted Inflation (+2)',
+              'Forecasted Unemployment Rate (0)')
+
 table_1 <- stargazer(model_1, 
           type = "latex",
           title = "Determinants of the Change in the Intended Federal Funds Rate",
           column.labels = c("Coefficient", "Standard Error"),
           omit.stat = c("f", "ser", "adj.rsq"),
           digits = 3,
-          out = 'output/table1.tex')
+          out = 'output/table1.tex', 
+          covariate.labels = coef_dic,
+          dep.var.caption = 'Change in Intended Federal Funds Rate',
+          header=F)
 
 # list(c("Notes:", "R² = 0.28; D.W. = 1.84; s.e.e. = 0.39; N = 263."),
 #      c("The sample is FOMC meetings over the period 1969:3–1996:12."))
