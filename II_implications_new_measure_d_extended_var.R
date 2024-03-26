@@ -7,11 +7,11 @@ library(vars)
 library(patchwork)
 
 data_monthly_extended <- readRDS(file = "datasets/data_monthly_extended.rds") %>%
-  filter(mtgdate > "1969-02-01", mtgdate < "2008-01-01")
+  filter(date > "1969-02-01", date < "2008-01-01")
 
 # original ----------------------------------------------------------------
 # Convert to xts for VAR analysis
-VAR_data <- xts(dplyr::select(data_monthly_extended, lnipnsa, lnppinsa, sumshck), order.by=data_monthly_extended$mtgdate)
+VAR_data <- xts(dplyr::select(data_monthly_extended, lnipnsa, lnppinsa, sumshck), order.by=data_monthly_extended$date)
 
 # Building VAR
 
@@ -125,4 +125,4 @@ figure_9e <- plot_sumshck / plot_lnipnsa / plot_lnppinsa +
   plot_annotation(title = "FIGURE 9e. THE EFFECT OF MONETARY POLICY IN A VAR USING THE NEW MEASURE OF MONETARY POLICY")
 
 # Print the combined plot
-print(figure_9e)
+ggsave(figure_9e, filename='output/figure9e.png', scale=2)
