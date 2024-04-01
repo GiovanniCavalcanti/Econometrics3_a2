@@ -208,6 +208,9 @@ print(figure_3e_a)
 #   plot_annotation(title = 'FIGURE 3. THE EFFECT OF BROADER MEASURES OF MONETARY POLICY ON OUTPUT')
 
 # Print the combined plot
+print(figure_2e)
+print(figure_3e_a)
+
 ggsave(plot=figure_2e, filename='output/figure2e.png', scale=2)
 ggsave(plot=figure_3e_a, filename = 'output/figure3e_a.png', scale = 2)
 

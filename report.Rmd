@@ -1,0 +1,36 @@
+---
+title: "report"
+author: "Calebe Piacentini and Giovanni Cavalcanti"
+date: "2024-04-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+For this replication, we had access to the authors replication kit and for the extension of the analysis period we used data made available by Ramey. However, we weren't able to replicate all the figures using the latter, moreover, since the extension to the Brazilian data involved reading the equivalent meetings from the FOMC insitution in the national context, COPOM, we didn't extended the replication for this setting.
+
+## Original sample
+
+```{r}
+
+```
+
+## Extension
+
+Ramey provides data to extended the analysis up until to 12:2007. As it can be seen below, conclusions kept the same
+
+```{r}
+
+```
+
+## Critical Review
+
+Some of the findings present concerns. Notably, the price level's inertia in response to contractionary policies and the emergence of the price puzzle challenge theoretical expectations. The methodological choice to determine lags ad hoc, without leveraging information criteria, further undermines the robustness of the analysis. Moreover, the observation that inflation deceleration occurs only after a notable delay cast doubt on the new monetary policy measure's ability to exclude anticipatory effects. The persistence of these issues, even when alternative inflation metrics are considered, underscores the need for a more rigorous methodological framework.
+
+The approach to control for supply shocks through commodity prices, while logical, is questioned, particularly due to its absence in the initial model specification. This methodological inconsistency raises concerns about the effectiveness of such controls. Although intended to temper the impulse response of monetary policy on output and price levels, the retrospective application of this control mechanism suggests potential shortcomings in the initial model design. Future research should prioritize the integration of supply shock controls in the initial model to verify their mitigating effects accurately.
+
+The inclusion of a var(36) model, encompassing output, price, and the novel monetary policy measure, falls short of providing fresh insights, with the issue of lag selection remaining unresolved. The interpretation challenges associated with the Impulse Response Function (IRF) suggest a possibly reactive model specification, potentially influenced by external feedback rather than a solid theoretical foundation. This scenario highlights the necessity for a more principled approach in model selection and specification, ensuring that methodological choices are driven by theoretical rigor and empirical justification

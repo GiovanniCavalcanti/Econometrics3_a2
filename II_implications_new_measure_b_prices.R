@@ -225,6 +225,10 @@ figure_6 <- plot_actual / plot_intermediate +
 
 # Print the combined plot
 print(table_4)
+print(figure_4)
+print(figure_5)
+print(figure_6)
+
 ggsave(plot=figure_4, filename = 'output/figure4.png', scale=2)
 ggsave(plot=figure_5, filename = 'output/figure5.png', scale=2)
 ggsave(plot=figure_6, filename = 'output/figure6.png', scale=2)

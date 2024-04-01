@@ -125,4 +125,5 @@ figure_9e <- plot_sumshck / plot_lnipnsa / plot_lnppinsa +
   plot_annotation(title = "FIGURE 9e. THE EFFECT OF MONETARY POLICY IN A VAR USING THE NEW MEASURE OF MONETARY POLICY")
 
 # Print the combined plot
+print(figure_9e)
 ggsave(figure_9e, filename='output/figure9e.png', scale=2)
