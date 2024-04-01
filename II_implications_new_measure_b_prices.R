@@ -10,7 +10,6 @@ library(patchwork)
 # read data
 data_monthly_original <- readRDS(file = "datasets/data_monthly_original.rds") %>% 
   mutate(month = month(date), year = year(date))
-print(colnames(data_monthly_original))
 
 # ---
 # Price ----
@@ -104,7 +103,7 @@ shock_actual_forecasts <- cumsum(calculate_mon_shock(model_coef = model_actual_f
 
 
 # calculating bootstrap errors
-bootstrap_se_price <- bootstrap_se(model = model_price, output_var='pcppinsa', indep_var = "resid", look_path = F)
+bootstrap_se_price <- bootstrap_se(model = model_price, output_var='pcppinsa', indep_var = "resid", look_path = T)
 #
 bootstrap_se_actual <- bootstrap_se(model = model_actual, output_var = 'pcppinsa', indep_var = 'dff', look_path = F)
 bootstrap_se_intended <- bootstrap_se(model = model_intended, output_var = 'pcppinsa', indep_var = 'dtarg', look_path = F)

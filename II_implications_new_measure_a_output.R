@@ -10,7 +10,6 @@ library(patchwork)
 # read data
 data_monthly_original <- readRDS(file = "datasets/data_monthly_original.rds") %>% 
   mutate(month = month(date), year = year(date))
-print(colnames(data_monthly_original))
 
 # ---
 # Output ----
