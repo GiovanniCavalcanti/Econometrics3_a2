@@ -139,7 +139,7 @@ table3_aspaper[1:24,5] <- output_coef[str_subset(names(output_coef), 'pcipnsa')]
 table3_aspaper[,3] <- output_se[str_subset(names(output_se), 'resid')]
 table3_aspaper[1:24,6] <- output_se[str_subset(names(output_se), 'pcipnsa')]
 
-stargazer(round(table3_aspaper, 4), out='output/table3e.tex', summary = F, header=F, digits=4)
+# stargazer(round(table3_aspaper, 4), out='output/table3e.tex', summary = F, header=F, digits=4)
 
 
 # ---
@@ -208,9 +208,6 @@ print(figure_3e_a)
 #   plot_annotation(title = 'FIGURE 3. THE EFFECT OF BROADER MEASURES OF MONETARY POLICY ON OUTPUT')
 
 # Print the combined plot
-print(figure_2e)
-print(figure_3e_a)
-
 ggsave(plot=figure_2e, filename='output/figure2e.png', scale=2)
 ggsave(plot=figure_3e_a, filename = 'output/figure3e_a.png', scale = 2)
 

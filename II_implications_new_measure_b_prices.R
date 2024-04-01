@@ -224,7 +224,7 @@ figure_6 <- plot_actual / plot_intermediate +
   plot_annotation(title = 'FIGURE 6. THE EFFECT OF BROADER MEASURES OF MONETARY POLICY ON THE PRICE LEVEL')
 
 # Print the combined plot
-print(table_4)
+# print(table_4)
 print(figure_4)
 print(figure_5)
 print(figure_6)

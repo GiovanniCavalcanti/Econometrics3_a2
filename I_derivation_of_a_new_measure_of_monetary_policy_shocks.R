@@ -133,8 +133,8 @@ figure_1 <- p1 / p2
 # Display the combined plot
 # to run those tables, change type above where it's created to 'text' and remove the _file_ option (in order for stargazer not to save it)
 # print(table_1)
-stargazer(round(table_2_data_wide, 3), out = 'output/table2.tex', summary = F)
-print(figure_1)
+# stargazer(round(table_2_data_wide, 3), out = 'output/table2.tex', summary = F)
+# print(figure_1)
 
 # saving results
 ggsave(filename = 'output/figure1.png', figure_1, scale = 2)

@@ -199,7 +199,7 @@ figure_3 <- plot_actual / plot_intermediate +
   plot_annotation(title = 'FIGURE 3. THE EFFECT OF BROADER MEASURES OF MONETARY POLICY ON OUTPUT')
 
 # Print the combined plot
-print(table_3)
+# print(table_3)
 print(figure_2)
 print(figure_3)
 
