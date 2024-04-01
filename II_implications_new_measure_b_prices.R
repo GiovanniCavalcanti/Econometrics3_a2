@@ -84,7 +84,7 @@ bootstrap_se <- function(model, output_var='pcppinsa', indep_var = "resid", look
   return(std_errors_bootstrap)
 } 
 
-model_price <- reg_output(verbose = T)
+model_price <- reg_output(verbose = F)
 model_cpi <- reg_output(output_var = 'pccpinsa', indep_var = 'resid', verbose = F)
 model_pce <- reg_output(output_var = 'pcpcegsa', indep_var = 'resid', verbose = F)
 # alternative measures

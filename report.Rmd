@@ -1,5 +1,5 @@
 ---
-title: "report"
+title: "A2 replication report"
 author: "Calebe Piacentini and Giovanni Cavalcanti"
 date: "2024-04-01"
 output: html_document
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ## Introduction
 
-For this replication, we had access to the authors replication kit and for the extension of the analysis period we used data made available by Ramey. However, we weren't able to replicate all the figures using the latter, moreover, since the extension to the Brazilian data involved reading the equivalent meetings from the FOMC insitution in the national context, COPOM, we didn't extended the replication for this setting.
+For this replication, we had access to the authors replication kit and for the extension of the analysis period we used data made available by Ramey. However, we weren't able to replicate all the figures using the latter, moreover, since the extension to the Brazilian data involved reading the equivalent meetings from the FOMC institution in the national context, COPOM, we didn't extended the replication for this setting.
 
 ## Original sample
 
@@ -56,7 +56,7 @@ source('I_derivation_of_a_new_measure_of_monetary_policy_shocks.R')
 
 Now, for the implication on output, we run:
 
-```{r}
+```{r, out.width="50%"}
 knitr::include_graphics("output/eq2.png")
 ```
 
