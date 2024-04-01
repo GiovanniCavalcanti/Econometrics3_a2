@@ -87,7 +87,7 @@ bootstrap_se <- function(model, output_var='pcipnsa', indep_var = "resid", look_
   return(std_errors_bootstrap)
 } 
 
-model_industrial <- reg_output(verbose = T)
+model_industrial <- reg_output(verbose = F)
 # alternative measures
 model_actual <- reg_output(output_var = 'pcipnsa', indep_var = 'dff')
 # model_intended <- reg_output(indep_var = 'dtarg')
@@ -114,16 +114,16 @@ bootstrap_se_actual <- bootstrap_se(model = model_actual, output_var = 'pcipnsa'
 ## Table 3 ----
 # ---
 
-table_3e <- stargazer(model_industrial, type = "text", 
-          column.labels = c("Monetary policy shock", "Change in industrial production"),
-          omit = c("Constant", "month"),
-          title = "Table 3—The Impact of Monetary Policy Shocks on Industrial Production",
-          notes = c("R² = 0.86; D.W. = 2.01; s.e.e. = 0.009; N = 324. The sample period is 1970:1-1996:12.",
-                    "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
-          notes.align = "l",
-          intercept.bottom = FALSE, 
-          omit.stat = c("adj.rsq", "f", "ser"), 
-          digits = 4)
+# table_3e <- stargazer(model_industrial, type = "text", 
+#           column.labels = c("Monetary policy shock", "Change in industrial production"),
+#           omit = c("Constant", "month"),
+#           title = "Table 3—The Impact of Monetary Policy Shocks on Industrial Production",
+#           notes = c("R² = 0.86; D.W. = 2.01; s.e.e. = 0.009; N = 324. The sample period is 1970:1-1996:12.",
+#                     "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
+#           notes.align = "l",
+#           intercept.bottom = FALSE, 
+#           omit.stat = c("adj.rsq", "f", "ser"), 
+#           digits = 4)
 
 # organizing to make like the paper table
 table3_aspaper <- matrix(NA, 36, 6)

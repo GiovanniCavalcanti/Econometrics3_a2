@@ -86,7 +86,7 @@ bootstrap_se <- function(model, output_var='pcipnsa', indep_var = "resid", look_
   return(std_errors_bootstrap)
 } 
 
-model_industrial <- reg_output(verbose = T)
+model_industrial <- reg_output(verbose = F)
 # alternative measures
 model_actual <- reg_output(output_var = 'pcipnsa', indep_var = 'dff')
 model_intended <- reg_output(indep_var = 'dtarg')
@@ -100,7 +100,7 @@ shock_intended <- cumsum(calculate_mon_shock(model_coef = model_intended$coeffic
 shock_actual_forecasts <- cumsum(calculate_mon_shock(model_coef = model_actual_forecasts$coefficients, 'pcipnsa', indep_var = "residf"))
 
 # calculating bootstrap errors
-bootstrap_se_industrial <- bootstrap_se(model = model_industrial, output_var='pcipnsa', indep_var = "resid", look_path = F)
+bootstrap_se_industrial <- bootstrap_se(model = model_industrial, output_var='pcipnsa', indep_var = "resid", look_path = T)
 #
 bootstrap_se_actual <- bootstrap_se(model = model_actual, output_var = 'pcipnsa', indep_var = 'dff', look_path = F)
 bootstrap_se_intended <- bootstrap_se(model = model_intended, output_var = 'pcipnsa', indep_var = 'dtarg', look_path = F)
@@ -110,16 +110,16 @@ bootstrap_se_actual_forecasts <- bootstrap_se(model = model_actual_forecasts, ou
 ## Table 3 ----
 # ---
 
-table_3 <- stargazer(model_industrial, type = "text",
-          column.labels = c("Monetary policy shock", "Change in industrial production"),
-          omit = c("Constant", "month"),
-          title = "The Impact of Monetary Policy Shocks on Industrial Production",
-          # notes = c("R² = 0.86; D.W. = 2.01; s.e.e. = 0.009; N = 324. The sample period is 1970:1-1996:12.",
-          #           "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
-          notes.align = "l",
-          intercept.bottom = FALSE, 
-          omit.stat = c("adj.rsq", "f", "ser"), 
-          digits = 4)
+# table_3 <- stargazer(model_industrial, type = "text",
+#           column.labels = c("Monetary policy shock", "Change in industrial production"),
+#           omit = c("Constant", "month"),
+#           title = "The Impact of Monetary Policy Shocks on Industrial Production",
+#           # notes = c("R² = 0.86; D.W. = 2.01; s.e.e. = 0.009; N = 324. The sample period is 1970:1-1996:12.",
+#           #           "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
+#           notes.align = "l",
+#           intercept.bottom = FALSE, 
+#           omit.stat = c("adj.rsq", "f", "ser"), 
+#           digits = 4)
 
 # organizing to make like the paper table
 table3_aspaper <- matrix(NA, 36, 6)
@@ -135,7 +135,7 @@ table3_aspaper[1:24,5] <- output_coef[str_subset(names(output_coef), 'pcipnsa')]
 table3_aspaper[,3] <- output_se[str_subset(names(output_se), 'resid')]
 table3_aspaper[1:24,6] <- output_se[str_subset(names(output_se), 'pcipnsa')]
 
-stargazer(round(table3_aspaper, 4), out='output/table3.tex', summary = F, header=F, digits=4)
+# stargazer(round(table3_aspaper, 4), out='output/table3.tex', summary = F, header=F, digits=4)
 
 # ---
 ## Graphs ----

@@ -70,8 +70,8 @@ calculate_mon_shock <- function(model_coef = model_actual$coefficients, output_v
 }
 
 
-model_industrial <- reg_output(verbose = T)
-model_industrial_com <- reg_output_com(verbose = T)
+model_industrial <- reg_output(verbose = F)
+model_industrial_com <- reg_output_com(verbose = F)
 # alternative measures
 model_actual <- reg_output(output_var = 'pcipnsa', indep_var = 'dff')
 model_actual_com <- reg_output_com(output_var = 'pcipnsa', indep_var = 'dff')
@@ -194,8 +194,8 @@ calculate_mon_shock <- function(model_coef = model_price$coefficients, output_va
   return(mon_shock)
 }
 
-model_price <- reg_output(verbose = T)
-model_price_com <- reg_output_com(verbose = T)
+model_price <- reg_output(verbose = F)
+model_price_com <- reg_output_com(verbose = F)
 # alternative measures
 model_actual <- reg_output(output_var = 'pcppinsa', indep_var = 'dff')
 model_actual_com <- reg_output_com(output_var = 'pcppinsa', indep_var = 'dff')

@@ -115,16 +115,16 @@ bootstrap_se_actual_forecasts <- bootstrap_se(model = model_actual_forecasts, ou
 ## Table 4 ----
 # ---
 
-table_4 <- stargazer(model_price, type = "text", 
-          column.labels = c("Monetary policy shock", "Change in producer prices"),
-          omit = c("Constant", "month"),
-          title = "TABLE 4 - THE IMPACT OF MONETARY POLICY SHOCKS ON PRICES",
-          notes = c("R² = 0.57; D.W. = 2.00; s.e.e. = 0.005; N = 324. The sample period is 1970:1-1996:12.",
-                    "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
-          notes.align = "l",
-          intercept.bottom = FALSE, 
-          omit.stat = c("adj.rsq", "f", "ser"), 
-          digits = 4)
+# table_4 <- stargazer(model_price, type = "text", 
+#           column.labels = c("Monetary policy shock", "Change in producer prices"),
+#           omit = c("Constant", "month"),
+#           title = "TABLE 4 - THE IMPACT OF MONETARY POLICY SHOCKS ON PRICES",
+#           notes = c("R² = 0.57; D.W. = 2.00; s.e.e. = 0.005; N = 324. The sample period is 1970:1-1996:12.",
+#                     "Coefficients and standard errors for the constant term and monthly dummies are not reported."),
+#           notes.align = "l",
+#           intercept.bottom = FALSE, 
+#           omit.stat = c("adj.rsq", "f", "ser"), 
+#           digits = 4)
 
 # to mimic the structure of the paper
 table4_aspaper <- matrix(NA, 48, 6)
@@ -140,7 +140,7 @@ table4_aspaper[1:24,5] <- price_coef[str_subset(names(price_coef), 'pcppinsa')]
 table4_aspaper[,3] <- price_se[str_subset(names(price_se), 'resid')]
 table4_aspaper[1:24,6] <- price_se[str_subset(names(price_se), 'pcppinsa')]
 
-stargazer(round(table4_aspaper, 4), out='output/table4.tex', summary = F, header=F, digits=4)
+# stargazer(round(table4_aspaper, 4), out='output/table4.tex', summary = F, header=F, digits=4)
 
 
 
